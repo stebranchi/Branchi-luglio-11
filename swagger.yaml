@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   version: '1.0'
   title: "Branchi-luglio-11"
-  description: Polls is a simple API allowing consumers to view polls and vote in them.
+  description: This is a simple API to manage teams in World Cup
   license:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
@@ -113,7 +113,7 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /match/{id1}{id2}:
+  /match/{id1}/{id2}:
     get:
       description: |
        Return the match number ID2 of the team ID
