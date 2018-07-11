@@ -16,7 +16,7 @@ app.post('/team', (req,res) => {
             "id": iTeam,
             "name": req.body.name,
             "is_still_in": req.body.is_still_in,
-            "matches": [req.body.matches]
+            "matches": [JSON.parse(req.body.matches)]
         });
     } else{
         teams.push({
@@ -52,7 +52,7 @@ app.put('/team/:id', (req,res) => {
                 "id": iTeam,
                 "name": req.body.name,
                 "is_still_in": req.body.is_still_in,
-                "matches": [req.body.matches]
+                "matches": [JSON.parse(req.body.matches)]
             });
         } else{
             teams.push({
@@ -116,4 +116,3 @@ app.put('/match/:id1/:id2', (req,res) => {
 
 app.listen(port);
 console.log("Listen to port "+port);
-
