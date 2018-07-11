@@ -15,106 +15,201 @@ consumes:
 produces:
 - application/json
 paths:
-  /questions:
-    x-summary: Questions Collection
-    get:
-      summary: List All Questions
-      responses:
-        200:
-          description: Successful Response
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Question'
-          examples:
-            application/json:
-              - question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 2048
-                  - choice: Python
-                    votes: 1024
-                  - choice: Objective-C
-                    votes: 512
-                  - choice: Ruby
-                    votes: 256
-    post:
-      description: >-
-        You may create your own question using this action. It takes a JSON
-        object containing a question and a collection of answers in the
-        form of choices.
-      summary: Create a New Question
+  /team:
+     post:
+      description: |
+       Create a new team
+      operationId: createTeam
       parameters:
-        - name: body
+        - name: team
           in: body
+          description: Team to create
           required: true
           schema:
-            $ref: '#/definitions/QuestionRequest'
+            $ref: '#/definitions/Team'
       responses:
         201:
-          description: ''
+          description: team response
           schema:
-            $ref: '#/definitions/Question'
-          examples:
-            application/json:
-                question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 0
-                  - choice: Python
-                    votes: 0
-                  - choice: Objective-C
-                    votes: 0
-                  - choice: Ruby
-                    votes: 0
+            type: object
+            items:
+              $ref: '#/definitions/Team'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        
+  /team/{id}:
+     get:
+      description: |
+       Return the team with the same ID
+      operationId: findTeam
+      parameters:
+        - name: id
+          in: path
+          description: ID of the team to return
+          required: true
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: team response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Team'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+     put:
+      summary: PUT
+      description: |
+       Update the team with the same ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of the team to return
+          required: true
+          type: integer
+          format: int32
+        - name: team
+          in: body
+          description: team to update
+          required: true
+          schema:
+            $ref: '#/definitions/Team'
+      responses:
+        200:
+          description: team response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Team'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /match:
+    post:
+      description: |
+       Create a new match
+      operationId: createTeam
+      parameters:
+        - name: match
+          in: body
+          description: Match to add to a specific team
+          required: true
+          schema:
+            $ref: '#/definitions/Match'
+      responses:
+        201:
+          description: team response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Match'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /match/{id1}{id2}:
+    get:
+      description: |
+       Return the match number ID2 of the team ID
+      operationId: findMatch
+      parameters:
+        - name: id1
+          in: path
+          description: ID of the team where to search
+          required: true
+          type: integer
+          format: int32
+        - name: id2
+          in: path
+          description: ID of the match to take
+          required: true
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: match response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Match'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      description: |
+       Update the team with the same ID
+      parameters:
+        - name: id1
+          in: path
+          description: ID of the team where to search
+          required: true
+          type: integer
+          format: int32
+        - name: id2
+          in: path
+          description: ID of the match to update
+          required: true
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: match response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Match'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Match'
 definitions:
-  Question:
-    title: Question
+  Team:
+    title: Team
     type: object
     properties:
-      question:
-        type: string
-      published_at:
-        type: string
-      choices:
-        type: array
-        items:
-          $ref: '#/definitions/Choice'
-    required:
-      - question
-      - published_at
-      - choices
-  Choice:
-    title: Choice
-    type: object
-    properties:
-      votes:
+      id:
         type: integer
         format: int32
-      choice:
+      name:
         type: string
-    required:
-      - votes
-      - choice
-  QuestionRequest:
-    title: Question Request
-    type: object
-    properties:
-      question:
-        type: string
-      choices:
+      is_still_in:
+        type: boolean
+      matches:
         type: array
         items:
-          type: string
+          $ref: '#/definitions/Match'
     required:
-      - question
-      - choices
-    example:
-      question: Favourite programming language?
-      choices:
-        - Swift
-        - Python
-        - Objective-C
-        - Ruby
+      - name
+      - is_still_in
+      - matches
+  Match:
+    title: Match
+    type: object
+    properties:
+      teamId:
+        type: integer
+        format: int32
+      opponent:
+        type: string
+      outcome:
+        type: string
+    required:
+      - opponent
+      - outcome
+  Error:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
